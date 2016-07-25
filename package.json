@@ -1,0 +1,21 @@
+{
+  "name": "aws-whats-new",
+  "version": "0.0.1",
+  "description": "Lambda function for Alexa skill to access the latest AWS news",
+  "main": "index.js",
+  "dependencies": {
+    "alexa-sdk": "^1.0.3",
+    "dotenv": "^2.0.0",
+    "striptags": "^2.1.1",
+    "xml-stream": "^0.4.5"
+  },
+  "devDependencies": {
+    "mocha": "^2.5.3",
+    "should": "^10.0.0"
+  },
+  "scripts": {
+    "test": "./node_modules/.bin/mocha"
+  },
+  "author": "",
+  "license": "ISC"
+}
