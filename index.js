@@ -26,9 +26,14 @@ var handlers = {
         var speechText = '';
         var repromptText = '';
 
+        if (current === 0) {
+          speechText += 'Here\'s what\'s new at a.w.s.';
+          speechText += '<break time="0.5s" />';
+        }
+
         for (var i = current; i < next; i++) {
           speechText += `<say-as interpret-as="cardinal">${i + 1}</say-as>`;
-          speechText += '<break time="0.5s" />';
+          speechText += '<break time="0.25s" />';
           speechText += CleanString(items[i].title);
           speechText += '<break time="1.5s" />';
         }
@@ -67,7 +72,10 @@ var handlers = {
   },
 
   'AMAZON.HelpIntent': function() {
-    this.emit(':ask', 'Would you like me to tell you the latest news at a.w.s?');
+    var helpText = 'Cloud news provides you with the latest news from a.w.s.';
+    var repromptText = 'Would you like to hear what\'s new at a.w.s.?';
+
+    this.emit(':ask', helpText, repromptText);
   },
 
   'Unhandled': function() {
