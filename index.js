@@ -71,6 +71,10 @@ var handlers = {
     this.emit(':tell', 'Okay.');
   },
 
+  'AMAZON.CancelIntent': function() {
+    this.emit('AMAZON.StopIntent');
+  },
+
   'AMAZON.HelpIntent': function() {
     var helpText = 'Cloud news provides you with the latest news from a.w.s.';
     var repromptText = 'Would you like to hear what\'s new at a.w.s.?';
