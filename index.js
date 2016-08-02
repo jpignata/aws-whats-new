@@ -91,6 +91,7 @@ function CleanString(string) {
   var replacements = [
     ['AWS', 'a.w.s'],
     ['IoT', 'i.o.t.'],
+    ['N. Virginia', 'Northern Virginia'],
     ['&nbsp;', '']
   ];
 
