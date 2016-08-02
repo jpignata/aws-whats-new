@@ -77,9 +77,9 @@ var handlers = {
 
   'AMAZON.HelpIntent': function() {
     var helpText = 'Cloud news provides you with the latest news from a.w.s.';
-    var repromptText = 'Would you like to hear what\'s new at a.w.s.?';
+    var repromptText = ' Say headlines to hear the latest news.';
 
-    this.emit(':ask', helpText, repromptText);
+    this.emit(':ask', helpText + repromptText, repromptText);
   },
 
   'Unhandled': function() {
