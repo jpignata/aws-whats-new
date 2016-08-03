@@ -8,12 +8,11 @@ var FeedParser = require('./feed_parser');
 var PAGE_SIZE = 3;
 
 var handlers = {
-  'LaunchRequest': function () {
-    this.emit('GetWhatsNew');
-  },
+  'LaunchRequest': function() {
+    var speechText = 'Hi! Say news to hear what\'s new at a.w.s.';
 
-  'NewSession': function() {
-    this.emit('GetWhatsNew');
+    this.attributes['current'] = 0;
+    this.emit(':tell', speechText);
   },
 
   'GetWhatsNew': function() {
@@ -29,6 +28,12 @@ var handlers = {
         if (current === 0) {
           speechText += 'Here\'s what\'s new at a.w.s.';
           speechText += '<break time="0.5s" />';
+
+          repromptText = 'Say next to hear more news or say a number to hear more details about a specific item.';
+        } else if (next < items.length) {
+          repromptText = 'Do you want to hear more news?';
+        } else {
+          repromptText = 'Say a number to hear more details about a specific item.';
         }
 
         for (var i = current; i < next; i++) {
@@ -36,12 +41,6 @@ var handlers = {
           speechText += '<break time="0.25s" />';
           speechText += CleanString(items[i].title);
           speechText += '<break time="1.5s" />';
-        }
-
-        if (next < items.length) {
-          repromptText = 'Do you want to hear more information on one of these items or hear more headlines?';
-        } else {
-          repromptText = 'Do you want to hear more information on one of these items?';
         }
 
         speechText += repromptText
@@ -76,10 +75,10 @@ var handlers = {
   },
 
   'AMAZON.HelpIntent': function() {
-    var helpText = 'Cloud news provides you with the latest news from a.w.s.';
-    var repromptText = ' Say headlines to hear the latest news.';
+    var helpText = 'Cloud news provides you with the latest news from a.w.s.. Say news to hear the most recent announcements.';
+    var repromptText = 'Say news to hear what\'s new at a.w.s..';
 
-    this.emit(':ask', helpText + repromptText, repromptText);
+    this.emit(':ask', helpText, repromptText);
   },
 
   'Unhandled': function() {
