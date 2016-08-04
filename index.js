@@ -12,7 +12,7 @@ var handlers = {
     var speechText = 'Hi! Say news to hear what\'s new at a.w.s.';
 
     this.attributes['current'] = 0;
-    this.emit(':tell', speechText);
+    this.emit(':ask', speechText, speechText);
   },
 
   'GetWhatsNew': function() {
