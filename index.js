@@ -57,10 +57,23 @@ var handlers = {
     var slots = this.event.request.intent.slots;
     var number = parseInt(slots.Number.value, 10) - 1;
 
+    this.attributes['current'] = this.attributes['current'] || 0;
+
     https.get('https://aws.amazon.com/new/feed/', (res) => {
       FeedParser(res, (items) => {
         if (items[number]) {
-          tell(CleanString(items[number].description), this);
+          var output = CleanString(items[number].description);
+          var reprompt;
+
+          if (this.attributes['current'] < MAX_RESULTS) {
+            reprompt = 'Say next to hear more news or say a number to hear more details about a specific item.';
+          } else {
+            reprompt = 'Say a number to hear more details about a specific item.';
+          }
+
+          output += '<break time="0.3s" />' + reprompt;
+
+          ask(output, reprompt, this);
         } else {
           var output = 'Sorry, I must have misunderstood. Which item would you like more details about?';
           ask(output, output, this);
