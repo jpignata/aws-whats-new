@@ -38,7 +38,6 @@ var handlers = {
         } else if (next < items.length) {
           reprompt = 'Do you want to hear more news?';
         } else {
-          output = 'That\'s all for what\'s new. ';
           reprompt = 'Say a number to hear more details about a specific item.';
         }
 
