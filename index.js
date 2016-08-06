@@ -4,7 +4,10 @@ var https = require('https');
 var striptags = require('striptags');
 var Alexa = require('alexa-sdk');
 var FeedParser = require('./feed_parser');
-var Entities = new (require('html-entities').AllHtmlEntities)();
+var Entities = require('html-entities');
+
+var xmlEntities = new Entities.XmlEntities();
+var htmlEntities = new Entities.AllHtmlEntities();
 
 var PAGE_SIZE = 3;
 var MAX_RESULTS = 25;
@@ -162,7 +165,8 @@ function CleanString(string) {
   });
 
   string = striptags(string);
-  string = Entities.decode(string);
+  string = htmlEntities.decode(string);
+  string = xmlEntities.encode(string);
 
   return string;
 }
