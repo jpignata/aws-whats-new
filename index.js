@@ -55,7 +55,7 @@ var handlers = {
 
   'Repeat': function() {
     if (this.attributes['current']) {
-      this.attributes['current'] = Math.max(this.attributes['current'] - 3, 0);
+      this.attributes['current'] = Math.max(this.attributes['current'] - PAGE_SIZE, 0);
     }
 
     this.emit('GetWhatsNew');
