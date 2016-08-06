@@ -34,7 +34,7 @@ var handlers = {
           output += 'Here\'s what\'s new at a.w.s.';
           output += '<break time="0.5s" />';
 
-          reprompt = 'Say next to hear more news, say a number to hear more details about a specific item, or say repeat to hear these headlines again.';
+          reprompt = 'Say next to hear more news, say a number to hear more details about a specific item, or say repeat to hear these head lines again.';
         } else if (next < items.length) {
           reprompt = 'Do you want to hear more news?';
         } else {
@@ -87,9 +87,9 @@ var handlers = {
           var reprompt;
 
           if (this.attributes['current'] < MAX_RESULTS) {
-            reprompt = 'Say next to hear more news, say a number to hear more details about a specific item, or say repeat to hear the previous headlines again.';
+            reprompt = 'Say next to hear more news, say a number to hear more details about a specific item, or say repeat to hear the previous head lines again.';
           } else {
-            reprompt = 'Say a number to hear more details about a specific item or say repeat to hear the previous headlines again.';
+            reprompt = 'Say a number to hear more details about a specific item or say repeat to hear the previous head lines again.';
           }
 
           output += '<break time="0.3s" />' + reprompt;
