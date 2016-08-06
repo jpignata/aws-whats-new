@@ -6,6 +6,7 @@ var Alexa = require('alexa-sdk');
 var FeedParser = require('./feed_parser');
 
 var PAGE_SIZE = 3;
+var MAX_RESULTS = 25;
 
 var handlers = {
   'LaunchRequest': function() {
@@ -21,7 +22,7 @@ var handlers = {
     https.get('https://aws.amazon.com/new/feed/', (res) => {
       FeedParser(res, (items) => {
         var current = this.attributes['current'];
-        var next = current + PAGE_SIZE;
+        var next = Math.min(current + PAGE_SIZE, MAX_RESULTS);
         var output = '';
         var reprompt = '';
 
@@ -33,10 +34,11 @@ var handlers = {
         } else if (next < items.length) {
           reprompt = 'Do you want to hear more news?';
         } else {
+          output = 'That\'s all for what\'s new. ';
           reprompt = 'Say a number to hear more details about a specific item.';
         }
 
-        for (var i = current; i < next; i++) {
+        for (var i = current; i < next && i < items.length; i++) {
           output += `<say-as interpret-as="cardinal">${i + 1}</say-as>`;
           output += '<break time="0.25s" />';
           output += CleanString(items[i].title);
