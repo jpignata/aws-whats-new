@@ -9,10 +9,10 @@ var PAGE_SIZE = 3;
 
 var handlers = {
   'LaunchRequest': function() {
-    var speechText = 'Hi! Say news to hear what\'s new at a.w.s.';
-
+    var output = 'Hi! Say news to hear what\'s new at a.w.s.';
     this.attributes['current'] = 0;
-    this.emit(':ask', speechText, speechText);
+
+    ask(output, output, this);
   },
 
   'GetWhatsNew': function() {
@@ -22,31 +22,31 @@ var handlers = {
       FeedParser(res, (items) => {
         var current = this.attributes['current'];
         var next = current + PAGE_SIZE;
-        var speechText = '';
-        var repromptText = '';
+        var output = '';
+        var reprompt = '';
 
         if (current === 0) {
-          speechText += 'Here\'s what\'s new at a.w.s.';
-          speechText += '<break time="0.5s" />';
+          output += 'Here\'s what\'s new at a.w.s.';
+          output += '<break time="0.5s" />';
 
-          repromptText = 'Say next to hear more news or say a number to hear more details about a specific item.';
+          reprompt = 'Say next to hear more news or say a number to hear more details about a specific item.';
         } else if (next < items.length) {
-          repromptText = 'Do you want to hear more news?';
+          reprompt = 'Do you want to hear more news?';
         } else {
-          repromptText = 'Say a number to hear more details about a specific item.';
+          reprompt = 'Say a number to hear more details about a specific item.';
         }
 
         for (var i = current; i < next; i++) {
-          speechText += `<say-as interpret-as="cardinal">${i + 1}</say-as>`;
-          speechText += '<break time="0.25s" />';
-          speechText += CleanString(items[i].title);
-          speechText += '<break time="1.5s" />';
+          output += `<say-as interpret-as="cardinal">${i + 1}</say-as>`;
+          output += '<break time="0.25s" />';
+          output += CleanString(items[i].title);
+          output += '<break time="1.5s" />';
         }
 
-        speechText += repromptText
+        output += reprompt
 
         this.attributes['current'] = next;
-        this.emit(':ask', speechText, repromptText);
+        ask(output, reprompt, this);
       });
     });
   },
@@ -58,16 +58,17 @@ var handlers = {
     https.get('https://aws.amazon.com/new/feed/', (res) => {
       FeedParser(res, (items) => {
         if (items[number]) {
-          this.emit(':tell', CleanString(items[number].description));
+          tell(CleanString(items[number].description), this);
         } else {
-          this.emit(':ask', 'Sorry, I must have misunderstood. Which item would you like more details about?');
+          var output = 'Sorry, I must have misunderstood. Which item would you like more details about?';
+          ask(output, output, this);
         }
       });
     });
   },
 
   'AMAZON.StopIntent': function() {
-    this.emit(':tell', 'Okay.');
+    tell('Okay.', this);
   },
 
   'AMAZON.CancelIntent': function() {
@@ -75,15 +76,45 @@ var handlers = {
   },
 
   'AMAZON.HelpIntent': function() {
-    var helpText = 'Cloud news provides you with the latest news from a.w.s.. Say news to hear the most recent announcements.';
-    var repromptText = 'Say news to hear what\'s new at a.w.s..';
+    var output = 'Cloud news provides you with the latest news from a.w.s.. Say news to hear the most recent announcements.';
+    var reprompt = 'Say news to hear what\'s new at a.w.s..';
 
-    this.emit(':ask', helpText, repromptText);
+    ask(output, reprompt, this);
   },
 
   'Unhandled': function() {
-    this.emit(':ask', 'Sorry, I didn\'t get that. Would you like me to tell you the latest news at a.w.s.?', 'Would you like me to tell you the latest news at a.w.s.?');
+    var output = 'Sorry, I didn\'t get that. Would you like me to tell you the latest news at a.w.s.?';
+    var reprompt = 'Would you like me to tell you the latest news at a.w.s.?';
+
+    ask(output, reprompt, this);
   }
+}
+
+function ask(output, reprompt, alexa) {
+  console.log(
+    JSON.stringify({
+      'response': {
+        'type': 'ask',
+        'output': output,
+        'reprompt': reprompt
+      }
+    })
+  );
+
+  alexa.emit(':ask', output, reprompt);
+}
+
+function tell(output, alexa) {
+  console.log(
+    JSON.stringify({
+      'response': {
+        'type': 'tell',
+        'output': output,
+      }
+    })
+  );
+
+  alexa.emit(':tell', output);
 }
 
 function CleanString(string) {
@@ -102,8 +133,10 @@ function CleanString(string) {
   return striptags(string);
 }
 
-exports.handler = function(event, context, callback){
+exports.handler = function(event, context, callback) {
     var alexa = Alexa.handler(event, context);
+
+    console.log(JSON.stringify(event));
 
     alexa.appId = process.env.APP_ID;
     alexa.registerHandlers(handlers);
