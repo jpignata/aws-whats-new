@@ -63,7 +63,16 @@ var handlers = {
 
   'GetMoreInformation': function() {
     var slots = this.event.request.intent.slots;
+
+    if (!slots.Number) {
+      return this.emit('Unhandled');
+    }
+
     var number = parseInt(slots.Number.value, 10) - 1;
+
+    if (isNaN(number)) {
+      return this.emit('Unhandled');
+    }
 
     this.attributes['current'] = this.attributes['current'] || 0;
 
@@ -83,8 +92,7 @@ var handlers = {
 
           ask(output, reprompt, this);
         } else {
-          var output = 'Sorry, I must have misunderstood. Which item would you like more details about?';
-          ask(output, output, this);
+          this.emit('Unhandled');
         }
       });
     });
