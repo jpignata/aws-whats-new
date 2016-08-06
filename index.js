@@ -4,6 +4,7 @@ var https = require('https');
 var striptags = require('striptags');
 var Alexa = require('alexa-sdk');
 var FeedParser = require('./feed_parser');
+var Entities = new (require('html-entities').AllHtmlEntities)();
 
 var PAGE_SIZE = 3;
 var MAX_RESULTS = 25;
@@ -153,7 +154,6 @@ function CleanString(string) {
     ['AWS', 'a.w.s'],
     ['IoT', 'i.o.t.'],
     ['N. Virginia', 'Northern Virginia'],
-    ['&nbsp;', '']
   ];
 
   replacements.forEach(function(replacement) {
@@ -161,7 +161,10 @@ function CleanString(string) {
     string = string.replace(pattern, replacement[1]);
   });
 
-  return striptags(string);
+  string = striptags(string);
+  string = Entities.decode(string);
+
+  return string;
 }
 
 exports.handler = function(event, context, callback) {
