@@ -102,10 +102,14 @@ var handlers = {
   },
 
   'AMAZON.StopIntent': function() {
-    tell('Okay.', this);
+    tell('', this);
   },
 
   'AMAZON.CancelIntent': function() {
+    this.emit('AMAZON.StopIntent');
+  },
+
+  'SessionEndedRequest': function() {
     this.emit('AMAZON.StopIntent');
   },
 
