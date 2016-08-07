@@ -7,9 +7,6 @@ module.exports = function(stream, callback, opts) {
   var xml = new XmlStream(stream);
   var items = [];
 
-  xml.on('endElement: item', (item) => {
-    items.push(item);
-  });
-
+  xml.on('endElement: item', (item) => items.push(item));
   xml.on('end', _ => callback(items));
 };
